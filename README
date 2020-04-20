@@ -1,2 +1,3 @@
 #mozilla-firefox (safe and easy web browser from Mozilla)
+
 This SLKBUILD build mozilla-firefox including all locales in one package.
