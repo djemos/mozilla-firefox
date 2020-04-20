@@ -1,0 +1,33 @@
+{
+ "policies": {
+   "DisableAppUpdate": true,
+   "DontCheckDefaultBrowser": true,
+   "SearchBar": "separate",
+   "SearchEngines": {
+      "Remove": [
+        "DuckDuckGo"
+      ],
+      "Add": [
+        {
+          "Name": "DDG",
+          "URLTemplate": "https://duckduckgo.com/?q={searchTerms}&t=salix&kj=g",
+          "Method": "GET",
+          "IconURL": "https://duckduckgo.com/favicon.ico",
+          "Alias": "ddg",
+          "Description": "Search DuckDuckGo",
+          "SuggestURLTemplate": "https://ac.duckduckgo.com/ac/?type=list&q={searchTerms}"
+        },
+        {
+          "Name": "DDG Lite",
+          "URLTemplate": "https://duckduckgo.com/lite/?q={searchTerms}&t=salix&kj=g",
+          "Method": "GET",
+          "IconURL": "https://duckduckgo.com/favicon.ico",
+          "Alias": "ddgl",
+          "Description": "Search DuckDuckGo (non-JS)",
+          "SuggestURLTemplate": "https://ac.duckduckgo.com/ac/?type=list&q={searchTerms}"
+        }
+      ],
+      "Default": "DDG"
+   }
+ }
+}

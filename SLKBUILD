@@ -1,0 +1,122 @@
+#Packager: Dimitris Tzemos <dijemos@gmail.com>
+#
+# Make sure you delete all *.xpi files from the source directory before
+# creating a package for a new firefox version
+
+pkgname=mozilla-firefox
+#pkgver=74.0.1
+pkgver=${pkgver:-$(wget --spider -S --max-redirect 0 "https://download.mozilla.org/?product=firefox-latest&os=linux${LIBDIRSUFFIX}&lang=en-US" 2>&1 | sed -n '/Location: /{s|.*/firefox-\(.*\)\.tar.*|\1|p;q;}')}
+#_majorver=`echo $pkgver | sed "s/\(.*\)\.\(.*\)\.\(.*\)esr/\1esr/"`
+_majorver=$pkgver
+pkgrel=1dj
+arch=${arch:-x86_64}
+
+source=("http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-$arch/en-US/firefox-$pkgver.tar.bz2"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/ar.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/bg.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/cs.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/da.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/de.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/en-US.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/el.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/es-AR.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/es-CL.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/es-ES.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/es-MX.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/fi.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/fr.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/he.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/hu.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/it.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/ja.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/lv.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/nb-NO.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/nl.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/pl.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/pt-BR.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/pt-PT.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/ro.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/ru.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/sv-SE.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/tr.xpi"
+	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/uk.xpi"
+	"mozilla-firefox.desktop"
+	"slackel.js"
+	"firefox.cfg"
+	"policies.json")
+docs=("readme.txt" "install" "copying" "changelog" "authors" "news" "todo")
+options=('noextract')
+# Don't start repackaging if the same version is already installed
+if (/bin/ls /var/log/packages/$pkgname-$pkgver-$arch-*.txz >/dev/null 2>&1 ) || (/bin/ls $pkgname-$pkgver-$arch-*.txz >/dev/null 2>&1) ; then
+  echo "Firefox ($pkgver) is already installed; exiting"
+  exit 0
+fi
+
+doinst() {
+# update the mime desktop database
+if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q
+fi
+# update the mime database
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime > /dev/null 2>&1
+fi
+# glib schemas
+if [ -x /usr/bin/glib-compile-schemas ]; then
+	/usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas > /dev/null 2>&1
+fi
+}
+
+slackdesc=\
+(
+#|-----handy-ruler------------------------------------------------------|
+"mozilla-firefox (safe and easy web browser from Mozilla)"
+"Firefox delivers safe, easy web browsing. A familiar user interface,"
+"enhanced security features including protection from online identity"
+"theft, and integrated search let you get the most out of the web."
+)
+
+
+build() {
+	# extract the firefox tarball
+	cd $startdir/src
+	tar xf firefox-$pkgver.tar.bz2
+
+	cd $startdir/src/firefox
+	mkdir -p $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver
+	cp -R ./* $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/
+	mkdir -p $startdir/pkg/usr/bin
+	mkdir -p $startdir/pkg/usr/share/applications
+	cp $startdir/src/mozilla-firefox.desktop $startdir/pkg/usr/share/applications/
+	mkdir -p $startdir/pkg/usr/share/icons/hicolor/{16x16,32x32,48x48,128x128}/apps
+	cp $startdir/src/firefox/browser/chrome/icons/default/default16.png $startdir/pkg/usr/share/icons/hicolor/16x16/apps/firefox.png
+	cp $startdir/src/firefox/browser/chrome/icons/default/default32.png $startdir/pkg/usr/share/icons/hicolor/32x32/apps/firefox.png
+	cp $startdir/src/firefox/browser/chrome/icons/default/default48.png $startdir/pkg/usr/share/icons/hicolor/48x48/apps/firefox.png
+	cp $startdir/src/firefox/browser/chrome/icons/default/default128.png $startdir/pkg/usr/share/icons/hicolor/128x128/apps/firefox.png
+
+	# configuration
+	mkdir -p $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/distribution/extensions/
+	cp $startdir/src/policies.json $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/distribution/
+	cp $startdir/src/slackel.js $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/defaults/pref/
+	cp $startdir/src/firefox.cfg $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/
+	
+	# locales
+	for locale in `basename -a -s ".xpi" $startdir/src/*.xpi`; do
+		cp $startdir/src/${locale}.xpi $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/distribution/extensions/langpack-${locale}\@firefox.mozilla.org.xpi
+	done
+	(
+	cd $startdir/pkg/usr/bin
+	ln -sf /usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/firefox firefox
+	)
+	(
+	cd $startdir/pkg/usr/lib${LIBDIRSUFFIX}/
+	ln -sf firefox-$_majorver firefox
+	)
+	mkdir -p $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/browser/extensions/
+	mkdir -p $startdir/pkg/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
+	(
+	cd $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/browser
+	ln -s ../../mozilla/plugins plugins
+	)
+	#echo  mozilla-firefox-esr > $startdir/$pkgname-$pkgver-$arch-$pkgrel.con
+}
