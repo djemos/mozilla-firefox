@@ -4,42 +4,42 @@
 # creating a package for a new firefox version
 
 pkgname=mozilla-firefox
-#pkgver=80.0.1
+#pkgver=130.0
 pkgver=${pkgver:-$(wget --spider -S --max-redirect 0 "https://download.mozilla.org/?product=firefox-latest&os=linux${LIBDIRSUFFIX}&lang=en-US" 2>&1 | sed -n '/Location: /{s|.*/firefox-\(.*\)\.tar.*|\1|p;q;}')}
 #_majorver=`echo $pkgver | sed "s/\(.*\)\.\(.*\)\.\(.*\)esr/\1esr/"`
-_majorver=$pkgver
+#_majorver=$pkgver
 pkgrel=1dj
 arch=${arch:-x86_64}
 
-source=("http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-$arch/en-US/firefox-$pkgver.tar.bz2"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/ar.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/bg.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/cs.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/da.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/de.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/en-US.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/el.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/es-AR.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/es-CL.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/es-ES.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/es-MX.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/fi.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/fr.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/he.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/hu.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/it.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/ja.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/lv.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/nb-NO.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/nl.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/pl.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/pt-BR.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/pt-PT.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/ro.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/ru.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/sv-SE.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/tr.xpi"
-	"http://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/uk.xpi"
+source=("https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-$arch/en-US/firefox-$pkgver.tar.bz2"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/ar.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/bg.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/cs.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/da.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/de.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/en-US.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/el.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/es-AR.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/es-CL.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/es-ES.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/es-MX.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/fi.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/fr.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/he.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/hu.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/it.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/ja.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/lv.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/nb-NO.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/nl.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/pl.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/pt-BR.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/pt-PT.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/ro.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/ru.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/sv-SE.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/tr.xpi"
+	"https://download-installer.cdn.mozilla.net/pub/firefox/releases/$pkgver/linux-i686/xpi/uk.xpi"
 	"mozilla-firefox.desktop"
 	"slackel.js"
 	"firefox.cfg"
@@ -78,13 +78,15 @@ slackdesc=\
 
 
 build() {
+	MOZ_ALLOW_DOWNGRADE=${MOZ_ALLOW_DOWNGRADE:-YES}
+
 	# extract the firefox tarball
 	cd $startdir/src
 	tar xf firefox-$pkgver.tar.bz2
 
 	cd $startdir/src/firefox
-	mkdir -p $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver
-	cp -R ./* $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/
+	mkdir -p $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox
+	cp -R ./* $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox/
 	mkdir -p $startdir/pkg/usr/bin
 	mkdir -p $startdir/pkg/usr/share/applications
 	cp $startdir/src/mozilla-firefox.desktop $startdir/pkg/usr/share/applications/
@@ -95,27 +97,47 @@ build() {
 	cp $startdir/src/firefox/browser/chrome/icons/default/default128.png $startdir/pkg/usr/share/icons/hicolor/128x128/apps/firefox.png
 
 	# configuration
-	mkdir -p $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/distribution/extensions/
-	cp $startdir/src/policies.json $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/distribution/
-	cp $startdir/src/slackel.js $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/defaults/pref/
-	cp $startdir/src/firefox.cfg $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/
+	mkdir -p $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox/distribution
+	cp $startdir/src/policies.json $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox/distribution/
+	cp $startdir/src/slackel.js $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox/defaults/pref/
+	cp $startdir/src/firefox.cfg $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox/
 	
 	# locales
+	mkdir -p $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox/distribution/extensions
 	for locale in `basename -a -s ".xpi" $startdir/src/*.xpi`; do
-		cp $startdir/src/${locale}.xpi $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/distribution/extensions/langpack-${locale}\@firefox.mozilla.org.xpi
+		cp $startdir/src/${locale}.xpi $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox/distribution/extensions/langpack-${locale}\@firefox.mozilla.org.xpi
 	done
-	(
-	cd $startdir/pkg/usr/bin
-	ln -sf /usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/firefox firefox
-	)
-	(
-	cd $startdir/pkg/usr/lib${LIBDIRSUFFIX}/
-	ln -sf firefox-$_majorver firefox
-	)
-	mkdir -p $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/browser/extensions/
+
+# If MOZ_ALLOW_DOWNGRADE=YES, replace the /usr/bin/firefox symlink with a
+# shell script that sets the MOZ_ALLOW_DOWNGRADE=1 environment variable so
+# that a detected browser downgrade does not reset the user profile:
+if [ "$MOZ_ALLOW_DOWNGRADE" = "YES" ]; then
+  rm -f $startdir/pkg/usr/bin/firefox
+  cat << EOF > $startdir/pkg/usr/bin/firefox
+#!/bin/sh
+#
+# Shell script to start Mozilla Firefox.
+#
+# Don't reset the user profile on a detected browser downgrade:
+export MOZ_ALLOW_DOWNGRADE=1
+
+# Start Firefox:
+exec /usr/lib${LIBDIRSUFFIX}/firefox/firefox "\$@"
+EOF
+  chown root:root $startdir/pkg/usr/bin/firefox
+  chmod 755 $startdir/pkg/usr/bin/firefox
+fi
+
+# Fix duplicate binary, https://bugzilla.mozilla.org/show_bug.cgi?id=658850
+( cd $startdir/pkg/usr/lib$LIBDIRSUFFIX/firefox
+  if cmp firefox firefox-bin ; then
+    ln -sf firefox-bin firefox
+  fi
+)
+	mkdir -p $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox/browser/extensions/
 	mkdir -p $startdir/pkg/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
 	(
-	cd $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox-$_majorver/browser
+	cd $startdir/pkg/usr/lib${LIBDIRSUFFIX}/firefox/browser
 	ln -s ../../mozilla/plugins plugins
 	)
 	#echo  mozilla-firefox-esr > $startdir/$pkgname-$pkgver-$arch-$pkgrel.con
