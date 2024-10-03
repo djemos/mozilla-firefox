@@ -4,7 +4,7 @@
 # creating a package for a new firefox version
 
 pkgname=mozilla-firefox
-#pkgver=130.0
+#pkgver=131.0
 pkgver=${pkgver:-$(wget --spider -S --max-redirect 0 "https://download.mozilla.org/?product=firefox-latest&os=linux${LIBDIRSUFFIX}&lang=en-US" 2>&1 | sed -n '/Location: /{s|.*/firefox-\(.*\)\.tar.*|\1|p;q;}')}
 #_majorver=`echo $pkgver | sed "s/\(.*\)\.\(.*\)\.\(.*\)esr/\1esr/"`
 #_majorver=$pkgver
