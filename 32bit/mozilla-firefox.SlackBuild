@@ -23,13 +23,13 @@
 # Thanks to the folks at the Mozilla Foundation for permission to
 # distribute this, and for all the great work!  :-)
 
-# Copyright 2025 Dimitris Tzemos <dijemos~at~gmail~dot~com>
+# Copyright 2026 Dimitris Tzemos <dijemos~at~gmail~dot~com>
 # Upgraded by Dimitris Tzemos for Slackel Linux Distribution.
 # This script build 32-bit Firefox package including locales, since Firefox version 145 no longer supports 32-bit Linux operating systems.
 # The packages rust, rust-bindgen, cbindgen, cargo-c, cargo-vendor-filterer, gcc-rust, nodejs have to installed from slackware current repos.
 
 cd $(dirname $0) ; CWD=$(pwd)
-SPKGNAME=150.0.2
+SPKGNAME=152.0.2
 if ! (/bin/ls firefox-$SPKGNAME.source.tar.xz >/dev/null 2>&1) ; then
   wget https://ftp.mozilla.org/pub/firefox/releases/$SPKGNAME/source/firefox-$SPKGNAME.source.tar.xz
 fi
@@ -164,6 +164,7 @@ else
 fi
 
 TMP=${TMP:-/tmp}
+#TMP=${TMP:-/run/media/djemos/4c8a8104-eadb-4de6-8c2b-e899604aa67f/tmp}
 PKG=$TMP/package-mozilla-firefox
 
 # If there is a private Google API key available at compile time, use
@@ -181,7 +182,9 @@ fi
 MOZVERS=${MOZVERS:-release}
 if echo $VERSION | grep -q b ; then MOZVERS=beta ; fi
 
-NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+#NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+# set NUMJOBS=-j1 to not run our of memory
+NUMJOBS=-j1
 
 rm -rf $PKG
 mkdir -p $TMP $PKG/usr/lib${LIBDIRSUFFIX}
@@ -205,6 +208,16 @@ cd firefox-$RELEASEVER || exit 1
 # Delete object directory if it was mistakenly included in the tarball:
 rm -rf obj-x86_64-pc-linux-gnu
 
+if [ "$ARCH" = "i686" ]; then
+# Fix Vulkan handles assigned to nullptr
+sed -i 's/mNv12Image\[buf\] = nullptr;/mNv12Image[buf] = VK_NULL_HANDLE;/g' dom/media/platforms/ffmpeg/FFmpegVulkanVideoDecoder.cpp || exit 1
+sed -i 's/mNv12Image\[i\] = nullptr;/mNv12Image[i] = VK_NULL_HANDLE;/g' dom/media/platforms/ffmpeg/FFmpegVulkanVideoDecoder.cpp || exit 1
+sed -i 's/ = nullptr;/ = VK_NULL_HANDLE;/g' dom/media/platforms/ffmpeg/FFmpegVulkanVideoDecoder.cpp || exit 1
+
+# Fix build failures due to missing types like uint32_t
+sed -i '1s/^/#include <cstdint>\n/' dom/media/webaudio/blink/DenormalDisabler.h || exit 1
+fi
+
 # Prevent failures building gkrust by suppressing useless warnings:
 sed -i.allow-warnings -e '/#!\[deny(warnings)\]/a #![allow(unused_imports)]' \
   servo/components/style/lib.rs
@@ -217,6 +230,17 @@ zcat $CWD/0027-LTO-Only-enable-LTO-for-Rust-when-complete-build-use.patch.gz | p
 
 # Don't define a function that's included starting in glibc-2.36:
 zcat $CWD/arc4random_buf.glibc-2.36.diff.gz | patch -p1 --verbose || exit 1
+
+# Pending:
+#cat $CWD/firefox.glibc-2.43.patch | patch -p1 --verbose || exit 1
+#sed -e '/patch.crates-io/a glslopt={path="third_party/rust/glslopt"}' -i Cargo.toml &&
+#sed -i '/name = "glslopt"/,/^$/{/source/d;/checksum/d}' Cargo.lock
+
+# Pending:
+#cat $CWD/firefox.python_3.14_fixes-1.patch | patch -p1 --verbose || exit 1
+
+# Fix build with LLVM22:
+#cat $CWD/firefox.llvm_22-1.patch | patch -p1 --verbose || exit 1
 
 # Fetch localization, if requested
 # https://bugzilla.mozilla.org/show_bug.cgi?id=1256955
@@ -263,7 +287,9 @@ OPTIONS="\
   --disable-crashreporter \
   --disable-debug-symbols \
   --disable-debug \
-  --disable-elf-hack"
+  --disable-elf-hack" 
+  
+#  --disable-updater"
 # Complains about missing APNG support in Slackware's libpng:
 # --with-system-png \
 # This option breaks mozilla-12.0:
@@ -292,11 +318,16 @@ export BUILD_OFFICIAL="1"
 export MOZ_PHOENIX="1"
 export MOZ_PACKAGE_JSSHELL="1"
 export CFLAGS="$SLKCFLAGS"
-export CXXFLAGS="$SLKCFLAGS -fno-delete-null-pointer-checks -Wno-error=c++11-narrowing-const-reference -latomic"
-
+export CXXFLAGS="$SLKCFLAGS -fno-delete-null-pointer-checks -Wno-error=c++11-narrowing-const-reference"
 export MOZ_MAKE_FLAGS="$NUMJOBS"
 export MOZBUILD_STATE_PATH="$TMP/firefox-$RELEASEVER/.mozbuild"
 export MOZ_APP_REMOTINGNAME="firefox"
+
+if [ "$ARCH" = "i686" ]; then
+	export CXXFLAGS="$SLKCFLAGS -fno-delete-null-pointer-checks -Wno-error=c++11-narrowing-const-reference -latomic"
+else
+	export CXXFLAGS="$SLKCFLAGS -fno-delete-null-pointer-checks -Wno-error=c++11-narrowing-const-reference"
+fi
 
 # Clear some variables that could break the build
 unset DBUS_SESSION_BUS_ADDRESS ORBIT_SOCKETDIR SESSION_MANAGER \
@@ -384,7 +415,6 @@ for i in 16 22 24 32 48 256; do
   install -m 0644 -D browser/branding/official/default${i}.png \
     $PKG/usr/share/icons/hicolor/${i}x${i}/apps/firefox.png || exit 1
 done
-
 mkdir -p $PKG/usr/share/pixmaps
 ( cd $PKG/usr/share/pixmaps ; ln -sf /usr/share/icons/hicolor/256x256/apps/firefox.png . )
 mkdir -p $PKG/usr/lib$LIBDIRSUFFIX/firefox/chrome/icons/default
