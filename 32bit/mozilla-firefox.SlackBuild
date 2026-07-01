@@ -29,7 +29,7 @@
 # The packages rust, rust-bindgen, cbindgen, cargo-c, cargo-vendor-filterer, gcc-rust, nodejs have to installed from slackware current repos.
 
 cd $(dirname $0) ; CWD=$(pwd)
-SPKGNAME=152.0.3
+SPKGNAME=152.0.4
 if ! (/bin/ls firefox-$SPKGNAME.source.tar.xz >/dev/null 2>&1) ; then
   wget https://ftp.mozilla.org/pub/firefox/releases/$SPKGNAME/source/firefox-$SPKGNAME.source.tar.xz
 fi
