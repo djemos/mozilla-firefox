@@ -1,5 +1,5 @@
 mozilla-firefox (safe and easy web browser from Mozilla)
 
 This SLKBUILD repackage the latest mozilla-firefox 64 bit including all locales in one package.
-The mozilla-firefox.SlackBuild script in 32bit folder build 32-bitand 64-bit Firefox packages from source including locales, since Firefox from version 145 no longer supports 32-bit Linux operating systems.
+The mozilla-firefox.SlackBuild script in 32bit folder build 32-bit and 64-bit Firefox packages from source including locales, since Firefox from version 145 no longer supports 32-bit Linux operating systems.
 # The packages rust-1.95.0, rust-bindgen, cbindgen, cargo-c, cargo-vendor-filterer, gcc-rust, nodejs have to installed from slackware current repos.
